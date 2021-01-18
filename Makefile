@@ -1,0 +1,2 @@
+build:
+	poetry build

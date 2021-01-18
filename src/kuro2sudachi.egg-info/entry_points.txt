@@ -1,0 +1,3 @@
+[console_scripts]
+kuro2sudachi = kuro2sudachi.core:cli
+

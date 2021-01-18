@@ -1,0 +1,11 @@
+README.md
+setup.py
+src/kuro2sudachi/__init__.py
+src/kuro2sudachi/core.py
+src/kuro2sudachi/normalizer.py
+src/kuro2sudachi.egg-info/PKG-INFO
+src/kuro2sudachi.egg-info/SOURCES.txt
+src/kuro2sudachi.egg-info/dependency_links.txt
+src/kuro2sudachi.egg-info/entry_points.txt
+src/kuro2sudachi.egg-info/requires.txt
+src/kuro2sudachi.egg-info/top_level.txt

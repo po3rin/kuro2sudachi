@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "kuro2sudachi"
+version = "0.1.1"
+description = ""
+authors = ["po3rin"]
+
+[tool.poetry.scripts]
+kuro2sudachi = "kuro2sudachi.core:cli"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+jaconv = "^0.2.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

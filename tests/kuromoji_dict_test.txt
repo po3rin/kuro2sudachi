@@ -1,0 +1,6 @@
+JA全厚連,JA全厚連,じぇいえーぜんこうれん,固有名詞
+名大,名大,メイダイ,固有名詞
+von zumbusch病,von zumbusch病,von zumbusch病,名詞
+ウイリス動脈輪閉塞,ウイリス動脈輪閉塞,ウイリス動脈輪閉塞,名詞
+酒さ,酒さ,酒さ,名詞
+Legalscape,Legalscape,リーガルスケープ,固有名詞
