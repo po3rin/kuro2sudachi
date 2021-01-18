@@ -1,6 +1,22 @@
 # kuro2sudachi
 
+[![PyPi version](https://img.shields.io/pypi/v/kuro2sudachi.svg)](https://pypi.python.org/pypi/kuro2sudachi/)
+[![](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
+
 kuro2sudachi lets you to convert kuromoji user dict to sudachi user dict.
+
+# Install
+
+```sh
+$ pip install kuro2sudachi
+
+# prepase riwirte.def
+# https://github.com/WorksApplications/Sudachi/blob/develop/src/main/resources/rewrite.def
+$ ls
+rewiite.def
+
+$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt
+```
 
 # develop
 
