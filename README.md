@@ -5,7 +5,7 @@
 
 kuro2sudachi lets you to convert kuromoji user dict to sudachi user dict.
 
-# Install
+# Usage
 
 ```sh
 $ pip install kuro2sudachi
