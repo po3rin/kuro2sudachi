@@ -8,13 +8,14 @@ from kuro2sudachi.normalizer import SudachiCharNormalizer
 
 
 parser = argparse.ArgumentParser(
-    description='convert kuromoji user dict to sudacchi user dict')
-parser.add_argument('file', help='kuromoji dict file path')
-parser.add_argument('-o', '--out', help='output path')
+    description="convert kuromoji user dict to sudacchi user dict"
+)
+parser.add_argument("file", help="kuromoji dict file path")
+parser.add_argument("-o", "--out", help="output path")
 
 pos_dict = {"固有名詞": "名詞,固有名詞,一般,*,*,*", "名詞": "名詞,普通名詞,一般,*,*,*"}
 
-p = re.compile('[\u30A1-\u30FC]*')
+p = re.compile("[\u30A1-\u30FC]*")
 
 
 def nomlized_yomi(yomi: str) -> str:
@@ -36,7 +37,7 @@ def pos_convert(pos: str) -> str:
 
 
 def convert(line: str) -> str:
-    data = line.split(',')
+    data = line.split(",")
     word = data[0]
     # splited = data[1]
     yomi = nomlized_yomi(data[2])
@@ -44,7 +45,7 @@ def convert(line: str) -> str:
 
     normalizer = SudachiCharNormalizer()
     normalized = normalizer.rewrite(word)
-    return f'{normalized},4786,4786,5000,{word},{pos},{yomi},{word},*,*,*,*,*'
+    return f"{normalized},4786,4786,5000,{word},{pos},{yomi},{word},*,*,*,*,*"
 
 
 def cli() -> str:
@@ -56,4 +57,4 @@ def cli() -> str:
             if line == "":
                 continue
             converted = convert(line)
-            out.write(f'{converted}\n')
+            out.write(f"{converted}\n")

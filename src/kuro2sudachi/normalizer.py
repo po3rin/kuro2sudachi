@@ -19,16 +19,21 @@ class SudachiCharNormalizer:
                 if len(cols) == 1:
                     if len(cols[0]) != 1:
                         raise Exception(
-                            "'{}' is not a single character at line {}".format(cols[0], i))
+                            "'{}' is not a single character at line {}".format(
+                                cols[0], i
+                            )
+                        )
                     self.ignore_normalize_set.add(cols[0])
                 elif len(cols) == 2:
                     if cols[0] in self.replace_char_map:
                         raise Exception(
-                            "'Replacement for '{}' defined again at line {}".format(cols[0], i))
+                            "'Replacement for '{}' defined again at line {}".format(
+                                cols[0], i
+                            )
+                        )
                     self.replace_char_map[cols[0]] = cols[1]
                 else:
-                    raise Exception(
-                        "Invalid format '{}' at line {}".format(line, i))
+                    raise Exception("Invalid format '{}' at line {}".format(line, i))
 
     def rewrite(self, text):
         chars_after = []
@@ -46,7 +51,7 @@ class SudachiCharNormalizer:
 
             # 1. replace char without normalize
             for l in range(len(text) - i, 0, -1):
-                replace = self.replace_char_map.get(text[i:i+l])
+                replace = self.replace_char_map.get(text[i : i + l])
                 if replace:
                     chars_after.append(replace)
                     next_offset += len(replace) - l
