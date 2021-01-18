@@ -1,6 +1,7 @@
 # kuro2sudachi
 
 [![PyPi version](https://img.shields.io/pypi/v/kuro2sudachi.svg)](https://pypi.python.org/pypi/kuro2sudachi/)
+![PyTest](https://github.com/po3rin/kuro2sudachi/workflows/PyTest/badge.svg)
 [![](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
 kuro2sudachi lets you to convert kuromoji user dict to sudachi user dict.
