@@ -18,7 +18,7 @@ rewiite.def
 $ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt
 ```
 
-# develop
+# Develop
 
 test kuro2sudachi
 
@@ -33,8 +33,16 @@ exec kuro2sudachi command
 $ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 ```
 
-## supported pos
+## Supported pos
 
+```sh
 * 固有名詞 -> 名詞,固有名詞,一般,*,*,*
 * 名刺 -> 名詞,普通名詞,一般,*,*,*
+```
+
+## TODO
+
+- [ ] split mode
+- [ ] change connection cost
+- [ ] supports many pos
 
