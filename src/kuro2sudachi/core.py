@@ -16,7 +16,7 @@ parser.add_argument(
     "-r", "--rewrite", help="rewrite text file path (default: ./rewrite.def)"
 )
 parser.add_argument("--ignore", action='store_true',
-                    help="ignore unsupported pos error")
+                    help="ignore invalid format line or unsupported pos error")
 
 pos_dict = {
     "固有名詞": "名詞,固有名詞,一般,*,*,*",
@@ -86,7 +86,7 @@ def cli() -> str:
             converted = ""
             try:
                 converted = convert(line, rewrite)
-            except UnSupportedPosError as e:
+            except (UnSupportedPosError, DictFormatError) as e:
                 if args.ignore:
                     continue
                 else:
