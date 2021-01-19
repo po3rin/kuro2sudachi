@@ -16,7 +16,8 @@ parser.add_argument(
     "-r", "--rewrite", help="rewrite text file path (default: ./rewrite.def)"
 )
 
-pos_dict = {"固有名詞": "名詞,固有名詞,一般,*,*,*", "名詞": "名詞,普通名詞,一般,*,*,*"}
+pos_dict = {"固有名詞": "名詞,固有名詞,一般,*,*,*",
+            "名詞": "名詞,普通名詞,一般,*,*,*", "記号": "記号,一般,*,*,*,*"}
 
 p = re.compile("[\u30A1-\u30FC]*")
 
