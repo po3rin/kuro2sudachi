@@ -12,6 +12,8 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("file", help="kuromoji dict file path")
 parser.add_argument("-o", "--out", help="output path")
+parser.add_argument("-r", "--rewirte",
+                    help="rewrite text file path (default: ./rewrite.def)")
 
 pos_dict = {"固有名詞": "名詞,固有名詞,一般,*,*,*", "名詞": "名詞,普通名詞,一般,*,*,*"}
 
@@ -36,14 +38,14 @@ def pos_convert(pos: str) -> str:
         sys.exit(1)
 
 
-def convert(line: str) -> str:
+def convert(line: str, rewrite="rewrite.def") -> str:
     data = line.split(",")
     word = data[0]
     # splited = data[1]
     yomi = nomlized_yomi(data[2])
     pos = pos_convert(data[3])
 
-    normalizer = SudachiCharNormalizer()
+    normalizer = SudachiCharNormalizer(rewrite_def_path=rewrite)
     normalized = normalizer.rewrite(word)
     return f"{normalized},4786,4786,5000,{word},{pos},{yomi},{word},*,*,*,*,*"
 
@@ -56,5 +58,6 @@ def cli() -> str:
             line = line.strip()
             if line == "":
                 continue
-            converted = convert(line)
+            rewrite = args.rewrite
+            converted = convert(line, rewrite)
             out.write(f"{converted}\n")
