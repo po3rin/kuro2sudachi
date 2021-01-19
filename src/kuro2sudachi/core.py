@@ -15,6 +15,8 @@ parser.add_argument("-o", "--out", help="output path")
 parser.add_argument(
     "-r", "--rewrite", help="rewrite text file path (default: ./rewrite.def)"
 )
+parser.add_argument("--ignore", action='store_true',
+                    help="ignore unsupported pos error")
 
 pos_dict = {
     "固有名詞": "名詞,固有名詞,一般,*,*,*",
@@ -26,6 +28,14 @@ pos_dict = {
 }
 
 p = re.compile("[\u30A1-\u30FC]*")
+
+
+class Error(Exception):
+    pass
+
+
+class UnSupportedPosError(Error):
+    pass
 
 
 def nomlized_yomi(yomi: str) -> str:
@@ -42,8 +52,7 @@ def pos_convert(pos: str) -> str:
         spos = pos_dict[pos]
         return spos
     except KeyError:
-        print(f"{pos} is not supported pos")
-        sys.exit(1)
+        raise UnSupportedPosError(f"{pos} is not supported pos")
 
 
 def convert(line: str, rewrite="rewrite.def") -> str:
@@ -67,5 +76,13 @@ def cli() -> str:
             if line == "":
                 continue
             rewrite = args.rewrite
-            converted = convert(line, rewrite)
+            converted = ""
+            try:
+                converted = convert(line, rewrite)
+            except UnSupportedPosError as e:
+                if args.ignore:
+                    continue
+                else:
+                    raise e
+
             out.write(f"{converted}\n")

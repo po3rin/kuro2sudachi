@@ -45,6 +45,7 @@ $ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 * 動詞 -> 動詞,一般,*,*,*,*
 ```
 
+if you want to ignore unsupported pos error, use `--ignore` flag.
 
 ## TODO
 
