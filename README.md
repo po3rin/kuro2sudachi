@@ -40,6 +40,8 @@ $ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 * 固有名詞 -> 名詞,固有名詞,一般,*,*,*
 * 名詞 -> 名詞,普通名詞,一般,*,*,*
 * 記号 -> 記号,一般,*,*,*,*
+* 形容詞 -> 形容詞,一般,*,*,*,*
+* 副詞 -> 副詞,*,*,*,*,*
 ```
 
 ## TODO
