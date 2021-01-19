@@ -12,8 +12,9 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("file", help="kuromoji dict file path")
 parser.add_argument("-o", "--out", help="output path")
-parser.add_argument("-r", "--rewirte",
-                    help="rewrite text file path (default: ./rewrite.def)")
+parser.add_argument(
+    "-r", "--rewrite", help="rewrite text file path (default: ./rewrite.def)"
+)
 
 pos_dict = {"固有名詞": "名詞,固有名詞,一般,*,*,*", "名詞": "名詞,普通名詞,一般,*,*,*"}
 
