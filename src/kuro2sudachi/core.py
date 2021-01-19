@@ -18,13 +18,9 @@ parser.add_argument(
 parser.add_argument("--ignore", action='store_true',
                     help="ignore invalid format line or unsupported pos error")
 
-pos_dict = {
-    "固有名詞": "名詞,固有名詞,一般,*,*,*",
-    "名詞": "名詞,普通名詞,一般,*,*,*",
-    "形容詞": "形容詞,一般,*,*,*,*",
-    "副詞": "副詞,*,*,*,*,*",
-    "動詞": "動詞,一般,*,*,*,*",
-    "記号": "記号,一般,*,*,*,*",
+default_pos_dict = {
+    "固有名詞": {"sudachi_pos": "名詞,固有名詞,一般,*,*,*", "left_id": 4786, "right_id": 4786, "cost": 7000},
+    "名詞": {"sudachi_pos": "名詞,普通名詞,一般,*,*,*", "left_id": 5146, "right_id": 5146, "cost": 7000},
 }
 
 p = re.compile("[\u30A1-\u30FC]*")
@@ -51,9 +47,9 @@ def nomlized_yomi(yomi: str) -> str:
     return ""
 
 
-def pos_convert(pos: str) -> str:
+def pos_convert(pos: str):
     try:
-        spos = pos_dict[pos]
+        spos = default_pos_dict[pos]
         return spos
     except KeyError:
         raise UnSupportedPosError(f"{pos} is not supported pos")
@@ -71,7 +67,7 @@ def convert(line: str, rewrite="rewrite.def") -> str:
 
     normalizer = SudachiCharNormalizer(rewrite_def_path=rewrite)
     normalized = normalizer.rewrite(word)
-    return f"{normalized},4786,4786,5000,{word},{pos},{yomi},{word},*,*,*,*,*"
+    return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,*,*,*,*"
 
 
 def cli() -> str:
