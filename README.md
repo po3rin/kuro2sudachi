@@ -42,11 +42,14 @@ $ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 * 記号 -> 記号,一般,*,*,*,*
 * 形容詞 -> 形容詞,一般,*,*,*,*
 * 副詞 -> 副詞,*,*,*,*,*
+* 動詞 -> 動詞,一般,*,*,*,*
 ```
+
 
 ## TODO
 
 - [ ] split mode
 - [ ] change connection cost
 - [ ] supports many pos
+- [ ] supports custom dict converts pos
 
