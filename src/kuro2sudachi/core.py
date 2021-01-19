@@ -38,6 +38,10 @@ class UnSupportedPosError(Error):
     pass
 
 
+class DictFormatError(Error):
+    pass
+
+
 def nomlized_yomi(yomi: str) -> str:
     yomi = jaconv.hira2kata(yomi)
     if p.fullmatch(yomi):
@@ -57,10 +61,13 @@ def pos_convert(pos: str) -> str:
 
 def convert(line: str, rewrite="rewrite.def") -> str:
     data = line.split(",")
-    word = data[0]
-    # splited = data[1]
-    yomi = nomlized_yomi(data[2])
-    pos = pos_convert(data[3])
+    try:
+        word = data[0]
+        # splited = data[1]
+        yomi = nomlized_yomi(data[2])
+        pos = pos_convert(data[3])
+    except IndexError:
+        raise DictFormatError(f"{line} is invalid format")
 
     normalizer = SudachiCharNormalizer(rewrite_def_path=rewrite)
     normalized = normalizer.rewrite(word)
