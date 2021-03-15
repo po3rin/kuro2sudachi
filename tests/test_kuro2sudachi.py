@@ -11,12 +11,16 @@ def test_kuro2sudachi_cli(capsys):
             line = line.strip()
             if line == "":
                 continue
+            if line[0] == "#":
+                continue
             sudachi_dict_lines.append(line)
 
     with fileinput.input(files="tests/kuromoji_dict_test.txt") as input:
         for i, line in enumerate(input):
             line = line.strip()
             if line == "":
+                continue
+            if line[0] == "#":
                 continue
 
             result = c.convert(line)
@@ -32,12 +36,16 @@ def test_kuro2sudachi_with_custom_pos_cli(capsys):
             line = line.strip()
             if line == "":
                 continue
+            if line[0] == "#":
+                continue
             sudachi_dict_lines.append(line)
 
     with fileinput.input(files="tests/kuromoji_dict_test.txt") as input:
         for i, line in enumerate(input):
             line = line.strip()
             if line == "":
+                continue
+            if line[0] == "#":
                 continue
 
             result = c.convert(line)
