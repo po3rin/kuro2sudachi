@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kuro2sudachi"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 authors = ["po3rin"]
 repository = "http://github.com/po3rin/kuro2sudachi"
@@ -12,8 +12,9 @@ license = "Apache-2.0"
 kuro2sudachi = "kuro2sudachi.core:cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.7"
 jaconv = "^0.2.4"
+importlib-metadata = "^3.7.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"

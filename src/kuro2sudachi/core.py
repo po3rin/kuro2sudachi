@@ -75,7 +75,7 @@ class Converter:
             yomi = self.nomlized_yomi(data[2])
             pos = self.pos_convert(data[3])
         except IndexError:
-            raise DictFormatError(f"{line} is invalid format")
+            raise DictFormatError(f"'{line}' is invalid format")
 
         normalizer = SudachiCharNormalizer(rewrite_def_path=self.rewrite)
         normalized = normalizer.rewrite(word)
@@ -110,6 +110,9 @@ def cli() -> str:
             line = line.strip()
             if line == "":
                 continue
+            if line[0] == "#":
+                continue
+
             converted = ""
             try:
                 converted = c.convert(line)
