@@ -8,3 +8,5 @@ Legalscape,Legalscape,リーガルスケープ,固有名詞
 # comment
 # 酒さ,酒さ,酒さ,名詞
 
+# splitting
+中咽頭ガン,中咽頭 ガン,チュウイントウ ガン,名詞

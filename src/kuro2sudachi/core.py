@@ -72,8 +72,8 @@ class Converter:
         try:
             word = data[0]
             # splited = data[1]
-            yomi = self.nomlized_yomi(data[2])
-            pos = self.pos_convert(data[3])
+            yomi = self.nomlized_yomi(data[2].replace(" ", ""))
+            pos = self.pos_convert(data[3].replace(" ", ""))
         except IndexError:
             raise DictFormatError(f"'{line}' is invalid format")
 

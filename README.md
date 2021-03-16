@@ -62,6 +62,16 @@ $ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -s convert_setting.jso
 
 if you want to ignore unsupported pos error & invalid format, use `--ignore` flag.
 
+## Splitting Words
+
+Currently, the CLI does not support word splitting. Therefore, the split representation of kuromoji is ignored.
+
+```
+中咽頭ガン,中咽頭 ガン,チュウイントウ ガン,カスタム名詞
+↓
+中咽頭ガン,4786,4786,7000,中咽頭ガン,名詞,固有名詞,一般,*,*,*,チュウイントウガン,中咽頭ガン,*,*,*,*,*
+```
+
 ## TODO
 
 - [ ] split mode
