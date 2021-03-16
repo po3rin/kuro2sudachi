@@ -16,7 +16,8 @@ def test_kuro2sudachi_cli(capsys):
             sudachi_dict_lines.append(line)
 
     with fileinput.input(files="tests/kuromoji_dict_test.txt") as input:
-        for i, line in enumerate(input):
+        count = 0
+        for line in input:
             line = line.strip()
             if line == "":
                 continue
@@ -24,7 +25,8 @@ def test_kuro2sudachi_cli(capsys):
                 continue
 
             result = c.convert(line)
-            assert result == sudachi_dict_lines[i]
+            assert result == sudachi_dict_lines[count]
+            count += 1
 
 
 def test_kuro2sudachi_with_custom_pos_cli(capsys):
@@ -41,7 +43,8 @@ def test_kuro2sudachi_with_custom_pos_cli(capsys):
             sudachi_dict_lines.append(line)
 
     with fileinput.input(files="tests/kuromoji_dict_test.txt") as input:
-        for i, line in enumerate(input):
+        count = 0
+        for line in input:
             line = line.strip()
             if line == "":
                 continue
@@ -49,4 +52,5 @@ def test_kuro2sudachi_with_custom_pos_cli(capsys):
                 continue
 
             result = c.convert(line)
-            assert result == sudachi_dict_lines[i]
+            assert result == sudachi_dict_lines[count]
+            count += 1
