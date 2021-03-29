@@ -6,7 +6,7 @@
 
 kuro2sudachi lets you to convert kuromoji user dict to sudachi user dict.
 
-# Usage
+## Usage
 
 ```sh
 $ pip install kuro2sudachi
@@ -19,24 +19,9 @@ rewiite.def
 $ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt
 ```
 
-# Develop
-
-test kuro2sudachi
-
-```sh
-$ poetry install
-$ poetry run pytest
-```
-
-exec kuro2sudachi command
-
-```sh
-$ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
-```
-
 ## Custom pos convert dict
 
-you can overwrite convert setting with setting json file.
+you can overwrite convert config with setting json file.
 
 ```json
 {
@@ -57,10 +42,19 @@ you can overwrite convert setting with setting json file.
 ```
 
 ```$
-$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -s convert_setting.json
+$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -c convert_config.json
 ```
 
 if you want to ignore unsupported pos error & invalid format, use `--ignore` flag.
+
+## Dictionary type
+
+You can specify the dictionary with the tokenize option -s (default: core).
+
+```sh
+$ pip install sudachidict_full
+$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -s full
+```
 
 ## Splitting Words
 
@@ -70,6 +64,21 @@ Currently, the CLI does not support word splitting. Therefore, the split represe
 中咽頭ガン,中咽頭 ガン,チュウイントウ ガン,カスタム名詞
 ↓
 中咽頭ガン,4786,4786,7000,中咽頭ガン,名詞,固有名詞,一般,*,*,*,チュウイントウガン,中咽頭ガン,*,*,*,*,*
+```
+
+# Develop
+
+test kuro2sudachi
+
+```sh
+$ poetry install
+$ poetry run pytest
+```
+
+exec kuro2sudachi command
+
+```sh
+$ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 ```
 
 ## TODO
