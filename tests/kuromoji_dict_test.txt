@@ -1,12 +1,13 @@
 JA全厚連,JA全厚連,じぇいえーぜんこうれん,固有名詞
-名大,名大,メイダイ,固有名詞
 von zumbusch病,von zumbusch病,von zumbusch病,名詞
 ウイリス動脈輪閉塞,ウイリス動脈輪閉塞,ウイリス動脈輪閉塞,名詞
 酒さ,酒さ,酒さ,名詞
-Legalscape,Legalscape,リーガルスケープ,固有名詞
 
 # comment
 # 酒さ,酒さ,酒さ,名詞
 
 # splitting
 中咽頭ガン,中咽頭 ガン,チュウイントウ ガン,名詞
+
+# sudachi dict already has
+心房粗動,心房粗動,シンボウインソドウ,名詞

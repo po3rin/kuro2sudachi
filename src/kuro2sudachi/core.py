@@ -5,20 +5,32 @@ import fileinput
 import jaconv
 
 from kuro2sudachi.normalizer import SudachiCharNormalizer
+from sudachipy import tokenizer
+from sudachipy import dictionary
 
+mode = tokenizer.Tokenizer.SplitMode.C
 
 parser = argparse.ArgumentParser(
     description="convert kuromoji user dict to sudacchi user dict"
 )
 parser.add_argument("file", help="kuromoji dict file path")
 parser.add_argument(
-    "-s",
-    "--setting",
-    help="convert setting file (json format file)",
+    "-c",
+    "--config",
+    help="convert config file (json format file)",
 )
 parser.add_argument("-o", "--out", help="output path")
 parser.add_argument(
-    "-r", "--rewrite", help="rewrite text file path (default: ./rewrite.def)"
+    "-d", "--rewrite_def", help="rewrite text file path (default: ./rewrite.def)"
+)
+parser.add_argument(
+    "-e", "--rm_already_exist", help="remove words system dict already exist"
+)
+parser.add_argument(
+    "-r", "--sudachi_setting", help="the setting file in JSON format"
+)
+parser.add_argument(
+    "-s", "--sudachi_dict_type", help="sudachidict type"
 )
 parser.add_argument(
     "--ignore",
@@ -57,15 +69,19 @@ class DictFormatError(Error):
 
 
 class Converter:
-    def __init__(self, rewrite_file="rewrite.def", setting=None):
-        if setting is not None:
-            with open(setting) as f:
+    def __init__(self, rewrite_file="rewrite.def", config=None, sudachi_setting=None, dict_type="core", rm=False):
+        self.tokenizer = dictionary.Dictionary(
+            dict_type=dict_type, config_path=sudachi_setting).create()
+
+        if config is not None:
+            with open(config) as f:
                 s = json.load(f)
         else:
             s = default_setting
 
         self.rewrite = rewrite_file
         self.setting = s
+        self.rm = rm
 
     def convert(self, line: str) -> str:
         data = line.split(",")
@@ -76,6 +92,11 @@ class Converter:
             pos = self.pos_convert(data[3].replace(" ", ""))
         except IndexError:
             raise DictFormatError(f"'{line}' is invalid format")
+
+        if self.rm:
+            words = [m.surface() for m in self.tokenizer.tokenize(word, mode)]
+            if len(words) == 1:
+                return ""
 
         normalizer = SudachiCharNormalizer(rewrite_def_path=self.rewrite)
         normalized = normalizer.rewrite(word)
@@ -100,10 +121,14 @@ class Converter:
 def cli() -> str:
     args = parser.parse_args()
     out = open(args.out, "wt")
-    rewrite = args.rewrite
-    setting = args.setting
+    rewrite = args.rewrite_def
+    rm = args.rm_already_exist
+    config = args.config
+    sudachi_setting = args.sudachi_setting
+    sudachi_dict_type = args.sudachi_dict_type
 
-    c = Converter(rewrite, setting)
+    c = Converter(rewrite, config, sudachi_setting=sudachi_setting,
+                  dict_type=sudachi_dict_type, rm=rm)
 
     with fileinput.input(files=args.file) as input:
         for line in input:
@@ -116,6 +141,8 @@ def cli() -> str:
             converted = ""
             try:
                 converted = c.convert(line)
+                if converted == "":
+                    continue
             except (UnSupportedPosError, DictFormatError) as e:
                 if args.ignore:
                     continue
