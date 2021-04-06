@@ -84,7 +84,4 @@ $ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 ## TODO
 
 - [ ] split mode
-- [ ] change connection cost
-- [ ] supports many pos
-- [ ] supports custom dict converts pos
 
