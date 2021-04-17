@@ -10,12 +10,6 @@ kuro2sudachi lets you to convert kuromoji user dict to sudachi user dict.
 
 ```sh
 $ pip install kuro2sudachi
-
-# prepase riwirte.def
-# https://github.com/WorksApplications/Sudachi/blob/develop/src/main/resources/rewrite.def
-$ ls
-rewiite.def
-
 $ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt
 ```
 
