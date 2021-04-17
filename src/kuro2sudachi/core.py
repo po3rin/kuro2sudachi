@@ -25,7 +25,7 @@ parser.add_argument(
     "-d",
     "--rewrite_def",
     default=os.path.dirname(os.path.abspath(__file__)) + "/rewrite.def",
-    help="rewrite text file path (default: ./rewrite.def)",
+    help="rewrite text file path",
 )
 parser.add_argument(
     "-e", "--rm_already_exist", help="remove words system dict already exist"
