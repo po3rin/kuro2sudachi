@@ -1,12 +1,13 @@
-import re
-import json
-import argparse
-import fileinput
-import jaconv
-
-from kuro2sudachi.normalizer import SudachiCharNormalizer
-from sudachipy import tokenizer
 from sudachipy import dictionary
+from sudachipy import tokenizer
+from kuro2sudachi.normalizer import SudachiCharNormalizer
+import jaconv
+import fileinput
+import argparse
+import json
+import os
+import re
+
 
 mode = tokenizer.Tokenizer.SplitMode.C
 
@@ -21,7 +22,7 @@ parser.add_argument(
 )
 parser.add_argument("-o", "--out", help="output path")
 parser.add_argument(
-    "-d", "--rewrite_def", help="rewrite text file path (default: ./rewrite.def)"
+    "-d", "--rewrite_def", default=os.path.dirname(os.path.abspath(__file__))+"/rewrite.def", help="rewrite text file path (default: ./rewrite.def)"
 )
 parser.add_argument(
     "-e", "--rm_already_exist", help="remove words system dict already exist"
@@ -69,7 +70,10 @@ class DictFormatError(Error):
 
 
 class Converter:
-    def __init__(self, rewrite_file="rewrite.def", config=None, sudachi_setting=None, dict_type="core", rm=False):
+    def __init__(self, rewrite_file, config=None, sudachi_setting=None, dict_type="core", rm=False):
+        if rewrite_file == "":
+            raise DictFormatError(f"rewrite.def file path is required")
+
         self.tokenizer = dictionary.Dictionary(
             dict_type=dict_type, config_path=sudachi_setting).create()
 

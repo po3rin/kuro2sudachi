@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "kuro2sudachi"
-version = "0.2.5"
+version = "0.2.6"
 description = ""
 authors = ["po3rin"]
 repository = "http://github.com/po3rin/kuro2sudachi"
 homepage = "http://github.com/po3rin/kuro2sudachi"
 readme = "README.md"
 license = "Apache-2.0"
+include = ["rewrite.def"]
 
 [tool.poetry.scripts]
 kuro2sudachi = "kuro2sudachi.core:cli"
