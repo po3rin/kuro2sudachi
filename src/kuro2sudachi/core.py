@@ -22,17 +22,16 @@ parser.add_argument(
 )
 parser.add_argument("-o", "--out", help="output path")
 parser.add_argument(
-    "-d", "--rewrite_def", default=os.path.dirname(os.path.abspath(__file__))+"/rewrite.def", help="rewrite text file path (default: ./rewrite.def)"
+    "-d",
+    "--rewrite_def",
+    default=os.path.dirname(os.path.abspath(__file__)) + "/rewrite.def",
+    help="rewrite text file path (default: ./rewrite.def)",
 )
 parser.add_argument(
     "-e", "--rm_already_exist", help="remove words system dict already exist"
 )
-parser.add_argument(
-    "-r", "--sudachi_setting", help="the setting file in JSON format"
-)
-parser.add_argument(
-    "-s", "--sudachi_dict_type", help="sudachidict type"
-)
+parser.add_argument("-r", "--sudachi_setting", help="the setting file in JSON format")
+parser.add_argument("-s", "--sudachi_dict_type", help="sudachidict type")
 parser.add_argument(
     "--ignore",
     action="store_true",
@@ -70,12 +69,20 @@ class DictFormatError(Error):
 
 
 class Converter:
-    def __init__(self, rewrite_file, config=None, sudachi_setting=None, dict_type="core", rm=False):
+    def __init__(
+        self,
+        rewrite_file,
+        config=None,
+        sudachi_setting=None,
+        dict_type="core",
+        rm=False,
+    ):
         if rewrite_file == "":
             raise DictFormatError(f"rewrite.def file path is required")
 
         self.tokenizer = dictionary.Dictionary(
-            dict_type=dict_type, config_path=sudachi_setting).create()
+            dict_type=dict_type, config_path=sudachi_setting
+        ).create()
 
         if config is not None:
             with open(config) as f:
@@ -131,8 +138,13 @@ def cli() -> str:
     sudachi_setting = args.sudachi_setting
     sudachi_dict_type = args.sudachi_dict_type
 
-    c = Converter(rewrite, config, sudachi_setting=sudachi_setting,
-                  dict_type=sudachi_dict_type, rm=rm)
+    c = Converter(
+        rewrite,
+        config,
+        sudachi_setting=sudachi_setting,
+        dict_type=sudachi_dict_type,
+        rm=rm,
+    )
 
     with fileinput.input(files=args.file) as input:
         for line in input:

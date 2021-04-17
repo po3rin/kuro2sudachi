@@ -35,8 +35,7 @@ def test_kuro2sudachi_cli(capsys):
 
 
 def test_kuro2sudachi_with_custom_pos_cli(capsys):
-    c = Converter(dict_type="full",
-                  config="tests/convert_config.json", rm=True)
+    c = Converter(dict_type="full", config="tests/convert_config.json", rm=True)
 
     sudachi_dict_lines = []
     with fileinput.input(files="tests/sudachi_with_custom_pos_dict.txt") as input:
