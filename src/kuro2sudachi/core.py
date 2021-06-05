@@ -93,6 +93,7 @@ class Converter:
         self.rewrite = rewrite_file
         self.setting = s
         self.rm = rm
+        self.normalizer = SudachiCharNormalizer(rewrite_def_path=self.rewrite)
 
     def convert(self, line: str) -> str:
         data = line.split(",")
@@ -104,14 +105,17 @@ class Converter:
         except IndexError:
             raise DictFormatError(f"'{line}' is invalid format")
 
-        if self.rm:
-            words = [m.surface() for m in self.tokenizer.tokenize(word, mode)]
-            if len(words) == 1:
-                return ""
+        words = [m.surface() for m in self.tokenizer.tokenize(word, mode)]
+        if self.rm and len(words) == 1:
+            return ""
 
-        normalizer = SudachiCharNormalizer(rewrite_def_path=self.rewrite)
-        normalized = normalizer.rewrite(word)
-        return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,*,*,*,*"
+        normalized = self.normalizer.rewrite(word)
+        unit_div_info = '*,*'
+        if (udm := pos.get('unit_div_mode')) != None:
+            unit_div_info = self.split(normalized, udm)
+
+        split_mode = pos.get('split_mode', '*')
+        return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,{split_mode},{unit_div_info},*"
 
     def pos_convert(self, pos: str):
         try:
@@ -124,9 +128,25 @@ class Converter:
         yomi = jaconv.hira2kata(yomi)
         if p.fullmatch(yomi):
             return yomi
-        else:
-            return ""
         return ""
+
+    def split(self, normalized: str, udm: list[str]) -> str:
+        unit_div_info = []
+        if "A" in udm :
+            words = [f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}' for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.C)]
+            info = '/'.join(words)
+            unit_div_info.append(f'"{info}"')
+        else:
+            unit_div_info.append('*')
+
+        if "B" in udm:
+            words = [f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}' for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.B)]
+            info = '/'.join(words)
+            unit_div_info.append(f'"{info}"')
+        else:
+            unit_div_info.append('*')
+        
+        return ','.join(unit_div_info)
 
 
 def cli() -> str:
