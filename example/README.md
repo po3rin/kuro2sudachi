@@ -3,7 +3,7 @@
 generate sudachi user dict form kuromoji dict.
 
 ```sh
-$ poetry run kuro2sudachi config/kuromoji_dict.txt -s full -o config/sudachi_user_dict.txt -c config/convert_config.json --ignore
+$ poetry run kuro2sudachi config/kuromoji_dict.txt -o config/sudachi_user_dict.txt -c config/convert_config.json --ignore
 $ poetry run sudachipy ubuild config/sudachi_user_dict.txt -o config/sudachi_user.dic
 ```
 

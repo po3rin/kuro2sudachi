@@ -34,7 +34,7 @@
         "cost": 5000,
         "split_mode": "C",
         "unit_div_mode": [
-            "B"
+            "A", "B"
         ]
     }
 }

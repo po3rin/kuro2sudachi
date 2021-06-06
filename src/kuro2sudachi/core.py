@@ -110,11 +110,11 @@ class Converter:
             return ""
 
         normalized = self.normalizer.rewrite(word)
-        unit_div_info = '*,*'
-        if (udm := pos.get('unit_div_mode')) != None:
+        unit_div_info = "*,*"
+        if (udm := pos.get("unit_div_mode")) != None:
             unit_div_info = self.split(normalized, udm)
 
-        split_mode = pos.get('split_mode', '*')
+        split_mode = pos.get("split_mode", "*")
         return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,{split_mode},{unit_div_info},*"
 
     def pos_convert(self, pos: str):
@@ -132,21 +132,31 @@ class Converter:
 
     def split(self, normalized: str, udm: list[str]) -> str:
         unit_div_info = []
-        if "A" in udm :
-            words = [f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}' for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.C)]
-            info = '/'.join(words)
+        if "A" in udm:
+            words = [
+                f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
+                for m in self.tokenizer.tokenize(
+                    normalized, tokenizer.Tokenizer.SplitMode.A
+                )
+            ]
+            info = "/".join(words)
             unit_div_info.append(f'"{info}"')
         else:
-            unit_div_info.append('*')
+            unit_div_info.append("*")
 
         if "B" in udm:
-            words = [f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}' for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.B)]
-            info = '/'.join(words)
+            words = [
+                f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
+                for m in self.tokenizer.tokenize(
+                    normalized, tokenizer.Tokenizer.SplitMode.B
+                )
+            ]
+            info = "/".join(words)
             unit_div_info.append(f'"{info}"')
         else:
-            unit_div_info.append('*')
-        
-        return ','.join(unit_div_info)
+            unit_div_info.append("*")
+
+        return ",".join(unit_div_info)
 
 
 def cli() -> str:
