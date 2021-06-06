@@ -50,9 +50,42 @@ $ pip install sudachidict_full
 $ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -s full
 ```
 
-## Splitting Words
+## Auto Splitting
 
-Currently, the CLI does not support word splitting. Therefore, the split representation of kuromoji is ignored.
+kuro2sudachi supports suto splitting.
+
+```json
+{
+    "名詞": {
+        "sudachi_pos": "名詞,普通名詞,一般,*,*,*",
+        "left_id": 5146,
+        "right_id": 5146,
+        "cost": 5000,
+        "split_mode": "C",
+        "unit_div_mode": [
+            "A", "B"
+        ]
+    }
+}
+```
+
+output includes unit devision info.
+
+```sh
+$ cat kuromoji_dict.txt
+融合たんぱく質,融合たんぱく質,融合たんぱく質,名詞
+発作性心房細動,発作性心房細動,発作性心房細動,名詞
+
+$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -c convert_config.json --ignore
+
+$ cat sudachi_user_dict.txt
+融合たんぱく質,4786,4786,5000,融合たんぱく質,名詞,普通名詞,一般,*,*,*,,融合たんぱく質,*,C,"融合,名詞,普通名詞,サ変可能,*,*,*,ユウゴウ/たんぱく,名詞,普通名詞,一般,*,*,*,タンパク/質,接尾辞,名詞的,一般,*,*,*,シツ","融合,名詞,普通名詞,サ変可能,*,*,*,ユウゴウ/たんぱく質,名詞,普通名詞,一般,*,*,*,タンパクシツ",*
+発作性心房細動,4786,4786,5000,発作性心房細動,名詞,普通名詞,一般,*,*,*,,発作性心房細動,*,C,"発作,名詞,普通名詞,一般,*,*,*,ホッサ/性,接尾辞,名詞的,一般,*,*,*,セイ/心房,名詞,普通名詞,一般,*,*,*,シンボウ/細動,名詞,普通名詞,一般,*,*,*,サイドウ","発作,名詞,普通名詞,一般,*,*,*,ホッサ/性,接尾辞,名詞的,一般,*,*,*,セイ/心房,名詞,普通名詞,一般,*,*,*,シンボウ/細動,名詞,普通名詞,一般,*,*,*,サイドウ",*
+```
+
+## Splitting Words defined by kuromoji
+
+Currently, the CLI does not support word splitting defined by kuromoji. Therefore, the split representation of kuromoji is ignored.
 
 ```
 中咽頭ガン,中咽頭 ガン,チュウイントウ ガン,カスタム名詞
@@ -60,7 +93,7 @@ Currently, the CLI does not support word splitting. Therefore, the split represe
 中咽頭ガン,4786,4786,7000,中咽頭ガン,名詞,固有名詞,一般,*,*,*,チュウイントウガン,中咽頭ガン,*,*,*,*,*
 ```
 
-# Develop
+# For Developer
 
 test kuro2sudachi
 

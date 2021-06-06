@@ -16,6 +16,26 @@
         "left_id": 4786,
         "right_id": 4786,
         "cost": 5000
+    },
+    "スプリット名詞B": {
+        "sudachi_pos": "名詞,普通名詞,一般,*,*,*",
+        "left_id": 4786,
+        "right_id": 4786,
+        "cost": 5000,
+        "split_mode": "C",
+        "unit_div_mode": [
+            "B"
+        ]
+    },
+    "スプリット名詞AB": {
+        "sudachi_pos": "名詞,普通名詞,一般,*,*,*",
+        "left_id": 4786,
+        "right_id": 4786,
+        "cost": 5000,
+        "split_mode": "C",
+        "unit_div_mode": [
+            "A", "B"
+        ]
     }
 }
 
