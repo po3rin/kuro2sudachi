@@ -231,5 +231,4 @@ def cli() -> str:
                     continue
                 else:
                     raise e
-            print(converted)
             out.write(f"{converted}\n")
