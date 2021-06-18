@@ -35,6 +35,7 @@ parser.add_argument(
 )
 parser.add_argument("-r", "--sudachi_setting", help="the setting file in JSON format")
 parser.add_argument("-s", "--sudachi_dict_type", help="sudachidict type")
+parser.add_argument("-m", "--merge_dict", help="A dictionary for split registration of words that are not in the system dictionary. Must be specified as a user dictionary in sudachi's configuration file (json).")
 parser.add_argument(
     "--ignore",
     action="store_true",
@@ -126,7 +127,7 @@ class Converter:
                 unit_div_info = self.split(normalized, udm)
         except OOVError as e:
             print(e)
-            return ""
+            raise e
 
         split_mode = pos.get("split_mode", "*")
         return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,{split_mode},{unit_div_info},*"
@@ -148,11 +149,20 @@ class Converter:
         unit_div_info = []
         if "A" in udm:
             words = []
-            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.A):
+            oov = []
+            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.C):
                 if m.is_oov():
-                    raise OOVError(f"split word has out of vocab: {m.surface()} in {normalized}")
+                    oov.append(m.surface())
+                    continue
+                # if m.dictionary_id():
+                #     info = f'U{m.word_id()}'
+
                 info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
+
                 words.append(info)
+
+            if len(oov) > 0:
+                raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
 
             info = "/".join(words)
             unit_div_info.append(f'"{info}"')
@@ -161,11 +171,16 @@ class Converter:
 
         if "B" in udm:
             words = []
+            oov = []
             for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.B):
                 if m.is_oov():
-                    raise OOVError(f"split word has out of vocab: {m.surface()} in {normalized}")
+                    oov.append(m.surface())
+                    continue
                 info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
                 words.append(info)
+
+            if len(oov) > 0:
+                raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
 
             info = "/".join(words)
             unit_div_info.append(f'"{info}"')
@@ -183,6 +198,7 @@ def cli() -> str:
     config = args.config
     sudachi_setting = args.sudachi_setting
     sudachi_dict_type = args.sudachi_dict_type
+    merge_dict = args.merge_dict
 
     c = Converter(
         rewrite,
@@ -191,6 +207,11 @@ def cli() -> str:
         dict_type=sudachi_dict_type,
         rm=rm,
     )
+
+    with fileinput.input(files=merge_dict) as merged:
+        for line in merged:
+            line = line.replace("\n" , "")
+            out.write(f"{line}\n")
 
     with fileinput.input(files=args.file) as input:
         for line in input:
@@ -205,10 +226,10 @@ def cli() -> str:
                 converted = c.convert(line)
                 if converted == "":
                     continue
-            except (UnSupportedPosError, DictFormatError) as e:
+            except (UnSupportedPosError, DictFormatError, OOVError) as e:
                 if args.ignore:
                     continue
                 else:
                     raise e
-
+            print(converted)
             out.write(f"{converted}\n")
