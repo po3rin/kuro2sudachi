@@ -173,7 +173,7 @@ class Converter:
             words = []
             oov = []
             for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.B):
-                if m.is_oov():
+                if m.is_oov() or m.dictionary_id() == -1:
                     oov.append(m.surface())
                     continue
                 info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
