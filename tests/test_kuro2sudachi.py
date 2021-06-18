@@ -94,5 +94,6 @@ def test_kuro2sudachi_with_split(capsys):
             result = c.convert(line)
             if result == "":
                 continue
+
             assert result == sudachi_dict_lines[count]
             count += 1

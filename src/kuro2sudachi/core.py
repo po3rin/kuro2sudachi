@@ -1,5 +1,6 @@
 from sudachipy import dictionary
 from sudachipy import tokenizer
+from sudachipy.plugin import oov
 from kuro2sudachi.normalizer import SudachiCharNormalizer
 import jaconv
 import fileinput
@@ -28,14 +29,16 @@ parser.add_argument(
     help="rewrite text file path",
 )
 parser.add_argument(
-    "-e", "--rm_already_exist", help="remove words system dict already exist"
+    "--rm_already_exist",
+    action="store_true",
+    help="remove words system dict already exist"
 )
 parser.add_argument("-r", "--sudachi_setting", help="the setting file in JSON format")
 parser.add_argument("-s", "--sudachi_dict_type", help="sudachidict type")
 parser.add_argument(
     "--ignore",
     action="store_true",
-    help="ignore invalid format line or unsupported pos error",
+    help="ignore invalid format line / unsupported pos error / oov error in splitted word",
 )
 
 default_setting = {
@@ -65,6 +68,10 @@ class UnSupportedPosError(Error):
 
 
 class DictFormatError(Error):
+    pass
+
+
+class OOVError(Error):
     pass
 
 
@@ -106,13 +113,20 @@ class Converter:
             raise DictFormatError(f"'{line}' is invalid format")
 
         words = [m.surface() for m in self.tokenizer.tokenize(word, mode)]
+
+        # alrady exists in system dic
         if self.rm and len(words) == 1:
             return ""
 
         normalized = self.normalizer.rewrite(word)
         unit_div_info = "*,*"
-        if (udm := pos.get("unit_div_mode")) != None:
-            unit_div_info = self.split(normalized, udm)
+
+        try:
+            if (udm := pos.get("unit_div_mode")) != None:
+                unit_div_info = self.split(normalized, udm)
+        except OOVError as e:
+            print(e)
+            return ""
 
         split_mode = pos.get("split_mode", "*")
         return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,{split_mode},{unit_div_info},*"
@@ -133,24 +147,26 @@ class Converter:
     def split(self, normalized: str, udm: list[str]) -> str:
         unit_div_info = []
         if "A" in udm:
-            words = [
-                f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
-                for m in self.tokenizer.tokenize(
-                    normalized, tokenizer.Tokenizer.SplitMode.A
-                )
-            ]
+            words = []
+            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.A):
+                if m.is_oov():
+                    raise OOVError(f"split word has out of vocab: {m.surface()} in {normalized}")
+                info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
+                words.append(info)
+
             info = "/".join(words)
             unit_div_info.append(f'"{info}"')
         else:
             unit_div_info.append("*")
 
         if "B" in udm:
-            words = [
-                f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
-                for m in self.tokenizer.tokenize(
-                    normalized, tokenizer.Tokenizer.SplitMode.B
-                )
-            ]
+            words = []
+            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.B):
+                if m.is_oov():
+                    raise OOVError(f"split word has out of vocab: {m.surface()} in {normalized}")
+                info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
+                words.append(info)
+
             info = "/".join(words)
             unit_div_info.append(f'"{info}"')
         else:
