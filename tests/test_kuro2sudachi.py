@@ -70,6 +70,7 @@ def test_kuro2sudachi_with_split(capsys):
         dict_type="full",
         config="tests/convert_config.json",
         rm=True,
+        
     )
 
     sudachi_dict_lines = []
@@ -94,5 +95,6 @@ def test_kuro2sudachi_with_split(capsys):
             result = c.convert(line)
             if result == "":
                 continue
+
             assert result == sudachi_dict_lines[count]
             count += 1
