@@ -70,6 +70,7 @@ def test_kuro2sudachi_with_split(capsys):
         dict_type="full",
         config="tests/convert_config.json",
         rm=True,
+        
     )
 
     sudachi_dict_lines = []

@@ -150,7 +150,7 @@ class Converter:
         if "A" in udm:
             words = []
             oov = []
-            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.C):
+            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.A):
                 if m.is_oov():
                     oov.append(m.surface())
                     continue
