@@ -11,3 +11,6 @@ von zumbusch病,von zumbusch病,von zumbusch病,名詞
 
 # sudachi dict already has
 心房粗動,心房粗動,シンボウインソドウ,名詞
+
+# ignore number
+1ステージ,1ステージ,1ステージ,名詞
