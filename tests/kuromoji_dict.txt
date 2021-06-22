@@ -14,3 +14,6 @@ von zumbusch病,von zumbusch病,von zumbusch病,名詞
 
 # ignore number
 1ステージ,1ステージ,1ステージ,名詞
+
+# ignore oov
+トロサ・ハント症候群,トロサ・ハント症候群,トロサ・ハント症候群,名詞

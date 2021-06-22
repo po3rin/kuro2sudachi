@@ -1,4 +1,4 @@
-from kuro2sudachi.core import Converter
+from kuro2sudachi.core import Converter, OOVError
 import fileinput
 
 
@@ -95,8 +95,11 @@ def test_kuro2sudachi_with_split(capsys):
             if line[0] == "#":
                 continue
 
-            result = c.convert(line)
-            if result == "":
+            try:
+                result = c.convert(line)
+                if result == "":
+                    continue
+            except OOVError: 
                 continue
 
             assert result == sudachi_dict_lines[count]

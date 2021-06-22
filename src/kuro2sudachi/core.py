@@ -152,7 +152,7 @@ class Converter:
             if ",".join(m.part_of_speech()) == "名詞,数詞,*,*,*,*":
                 return "*"
 
-            if m.is_oov():
+            if m.is_oov() or m.dictionary_id()==-1:
                 oov.append(m.surface())
                 continue
 
@@ -168,20 +168,23 @@ class Converter:
 
 
     def split(self, normalized: str, udm: list[str]) -> str:
-        unit_div_info = []
-        if "A" in udm:
-            info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.A)
-            unit_div_info.append(info)
-        else:
-            unit_div_info.append("*")
+        try:
+            unit_div_info = []
+            if "A" in udm:
+                info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.A)
+                unit_div_info.append(info)
+            else:
+                unit_div_info.append("*")
 
-        if "B" in udm:
-            info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.B)
-            unit_div_info.append(info)
-        else:
-            unit_div_info.append("*")
+            if "B" in udm:
+                info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.B)
+                unit_div_info.append(info)
+            else:
+                unit_div_info.append("*")
 
-        return ",".join(unit_div_info)
+            return ",".join(unit_div_info)
+        except OOVError as e:
+            raise e
 
 
 def cli() -> str:
