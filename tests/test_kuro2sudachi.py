@@ -27,6 +27,9 @@ def test_kuro2sudachi_cli(capsys):
             result = c.convert(line)
             if result == "":
                 continue
+
+            print(result)
+            print(sudachi_dict_lines[count])
             assert result == sudachi_dict_lines[count]
             count += 1
 

@@ -145,45 +145,39 @@ class Converter:
             return yomi
         return ""
 
+    def split_info(self, normalized: str, udm: list[str], mode: any) -> str:
+        words = []
+        oov = []
+        for m in self.tokenizer.tokenize(normalized, mode):
+            if ",".join(m.part_of_speech()) == "名詞,数詞,*,*,*,*":
+                return "*"
+
+            if m.is_oov():
+                oov.append(m.surface())
+                continue
+
+            info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
+
+            words.append(info)
+
+        if len(oov) > 0:
+            raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
+
+        info = "/".join(words)
+        return f'"{info}"'
+
+
     def split(self, normalized: str, udm: list[str]) -> str:
         unit_div_info = []
         if "A" in udm:
-            words = []
-            oov = []
-            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.A):
-                if m.is_oov():
-                    oov.append(m.surface())
-                    continue
-                # if m.dictionary_id():
-                #     info = f'U{m.word_id()}'
-
-                info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
-
-                words.append(info)
-
-            if len(oov) > 0:
-                raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
-
-            info = "/".join(words)
-            unit_div_info.append(f'"{info}"')
+            info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.A)
+            unit_div_info.append(info)
         else:
             unit_div_info.append("*")
 
         if "B" in udm:
-            words = []
-            oov = []
-            for m in self.tokenizer.tokenize(normalized, tokenizer.Tokenizer.SplitMode.B):
-                if m.is_oov() or m.dictionary_id() == -1:
-                    oov.append(m.surface())
-                    continue
-                info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
-                words.append(info)
-
-            if len(oov) > 0:
-                raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
-
-            info = "/".join(words)
-            unit_div_info.append(f'"{info}"')
+            info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.B)
+            unit_div_info.append(info)
         else:
             unit_div_info.append("*")
 
