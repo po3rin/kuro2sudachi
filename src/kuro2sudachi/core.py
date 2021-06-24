@@ -146,7 +146,7 @@ class Converter:
         return ""
 
     def split_info(self, normalized: str, udm: list[str], mode: any) -> str:
-        words = []
+        word_ids = []
         oov = []
         for m in self.tokenizer.tokenize(normalized, mode):
             if ",".join(m.part_of_speech()) == "名詞,数詞,*,*,*,*":
@@ -156,15 +156,12 @@ class Converter:
                 oov.append(m.surface())
                 continue
 
-            info = f'{m.surface()},{",".join(m.part_of_speech())},{m.reading_form()}'
-
-            words.append(info)
+            word_ids.append(str(m.word_id()))
 
         if len(oov) > 0:
             raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
 
-        info = "/".join(words)
-        return f'"{info}"'
+        return "/".join(word_ids)
 
 
     def split(self, normalized: str, udm: list[str]) -> str:
