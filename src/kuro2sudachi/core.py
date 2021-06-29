@@ -86,7 +86,7 @@ class Converter:
         rm=False,
     ):
         if rewrite_file == "":
-            raise DictFormatError(f"rewrite.def file path is required")
+            raise DictFormatError("rewrite.def file path is required")
 
         self.tokenizer = dictionary.Dictionary(
             dict_type=dict_type, config_path=sudachi_setting
