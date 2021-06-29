@@ -1,6 +1,6 @@
 {
     "systemDict" : "",
-    "userDict" : ["sudachi_user.dic"],
+    "userDict" : ["sudachi_user_for_merge.dic"],
     "characterDefinitionFile" : "char.def",
     "inputTextPlugin" : [
         { "class" : "sudachipy.plugin.input_text.DefaultInputTextPlugin" },
