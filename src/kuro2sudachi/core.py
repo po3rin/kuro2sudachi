@@ -1,6 +1,4 @@
-from sudachipy import dictionary
-from sudachipy import tokenizer
-from sudachipy.plugin import oov
+from sudachipy import dictionary, tokenizer
 from kuro2sudachi.normalizer import SudachiCharNormalizer
 import jaconv
 import fileinput
