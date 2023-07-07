@@ -13,7 +13,7 @@ include = ["rewrite.def"]
 kuro2sudachi = "kuro2sudachi.core:cli"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 jaconv = "^0.2.4"
 importlib-metadata = "^6.7.0"
 sudachipy = "^0.5.2"
