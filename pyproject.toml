@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kuro2sudachi"
-version = "0.3.6"
+version = "0.3.7"
 description = ""
 authors = ["po3rin"]
 repository = "http://github.com/po3rin/kuro2sudachi"
@@ -13,14 +13,15 @@ include = ["rewrite.def"]
 kuro2sudachi = "kuro2sudachi.core:cli"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.11"
 jaconv = "^0.2.4"
-importlib-metadata = "^3.7.3"
+importlib-metadata = "^6.7.0"
 sudachipy = "^0.5.2"
-sudachidict_full = "^20210608"
-SudachiDict-core = "^20210608"
+sudachidict-core = "^20230110"
+sudachidict-full = "^20230110"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
 pytest = "^6.2.1"
 
 [build-system]

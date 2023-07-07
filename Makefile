@@ -2,5 +2,7 @@ build:
 	poetry build
 
 format:
-	black src/kuro2sudachi/*.py
+	poetry run black src/kuro2sudachi/*.py
 
+publish:
+	twine upload dist/*
