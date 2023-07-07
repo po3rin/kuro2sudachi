@@ -23,7 +23,7 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python3 - 
-          echo "/opt/poetry/bin:$PATH" >> $PATH
+          export PATH="/opt/poetry/bin:$PATH"
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
