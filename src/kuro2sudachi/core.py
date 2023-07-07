@@ -31,11 +31,15 @@ parser.add_argument(
 parser.add_argument(
     "--rm_already_exist",
     action="store_true",
-    help="remove words system dict already exist"
+    help="remove words system dict already exist",
 )
 parser.add_argument("-r", "--sudachi_setting", help="the setting file in JSON format")
 parser.add_argument("-s", "--sudachi_dict_type", help="sudachidict type")
-parser.add_argument("-m", "--merge_dict", help="A dictionary for split registration of words that are not in the system dictionary. Must be specified as a user dictionary in sudachi's configuration file (json).")
+parser.add_argument(
+    "-m",
+    "--merge_dict",
+    help="A dictionary for split registration of words that are not in the system dictionary. Must be specified as a user dictionary in sudachi's configuration file (json).",
+)
 parser.add_argument(
     "--ignore",
     action="store_true",
@@ -152,7 +156,7 @@ class Converter:
             if ",".join(m.part_of_speech()) == "名詞,数詞,*,*,*,*":
                 return "*"
 
-            if m.is_oov() or m.dictionary_id()==-1:
+            if m.is_oov() or m.dictionary_id() == -1:
                 oov.append(m.surface())
                 continue
 
@@ -162,7 +166,6 @@ class Converter:
             raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
 
         return "/".join(word_ids)
-
 
     def split(self, normalized: str, udm: list[str]) -> str:
         try:
@@ -204,7 +207,7 @@ def cli() -> str:
 
     with fileinput.input(files=merge_dict) as merged:
         for line in merged:
-            line = line.replace("\n" , "")
+            line = line.replace("\n", "")
             out.write(f"{line}\n")
 
     with fileinput.input(files=args.file) as input:
