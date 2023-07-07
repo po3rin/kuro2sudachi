@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kuro2sudachi"
-version = "0.3.7"
+version = "0.3.8"
 description = ""
 authors = ["po3rin"]
 repository = "http://github.com/po3rin/kuro2sudachi"
@@ -23,6 +23,7 @@ sudachidict-full = "^20230110"
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
 pytest = "^6.2.1"
+twine = "^4.0.2"
 
 [build-system]
 requires = ["poetry>=0.12"]
