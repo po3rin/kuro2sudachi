@@ -1,6 +1,4 @@
-from sudachipy import dictionary
-from sudachipy import tokenizer
-from sudachipy.plugin import oov
+from sudachipy import dictionary, tokenizer
 from kuro2sudachi.normalizer import SudachiCharNormalizer
 import jaconv
 import fileinput
@@ -93,12 +91,8 @@ class Converter:
             raise DictFormatError("rewrite.def file path is required")
 
         self.tokenizer = dictionary.Dictionary(
-<<<<<<< Updated upstream
-            dict_type=dict_type, config_path=sudachi_setting
-=======
             config_path=sudachi_setting,
             dict=dict_type, 
->>>>>>> Stashed changes
         ).create()
 
         if config is not None:

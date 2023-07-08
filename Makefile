@@ -5,4 +5,4 @@ format:
 	poetry run black src/kuro2sudachi/*.py
 
 publish:
-	twine upload dist/*
+	poetry run twine upload dist/*
