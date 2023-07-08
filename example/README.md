@@ -5,14 +5,18 @@ generate sudachi user dict form kuromoji dict.
 ```sh
 ## in example directory
 
+$ curl -O -L http://sudachi.s3-website-ap-northeast-1.amazonaws.com/sudachidict/sudachi-dictionary-20230110-core.zip && \
+    unzip sudachi-dictionary-20230110-core.zip && \
+    cp sudachi-dictionary-20230110/system_core.dic ./config/system_core.dic
+
 ## prepare dict for merge to avoid oov
-$ sudachi ubuild config/sudachi_user_dict_for_merge.txt -o config/sudachi_user_for_merge.dic -s $HOME/ghq/github.com/WorksApplications/sudachi.rs/resources/system.dic
+$ sudachi ubuild config/sudachi_user_dict_for_merge.txt -o config/sudachi_user_for_merge.dic -s config/system_core.dic
 
 ## convert
-$ poetry run kuro2sudachi config/kuromoji_dict.txt -o config/sudachi_user_dict.txt -c config/convert_config.json --ignore -r config/sudachi.json -m config/sudachi_user_dict_for_merge.txt
+$ poetry run kuro2sudachi config/kuromoji_dict.txt -o config/sudachi_user_dict.txt -c config/convert_config.json --ignore -r config/sudachi_for_build.json -m config/sudachi_user_dict_for_merge.txt
 
 ## build
-$ sudachi ubuild config/sudachi_user_dict.txt -o config/sudachi_user.dic -s $HOME/ghq/github.com/WorksApplications/sudachi.rs/resources/system.dic
+$ sudachi ubuild config/sudachi_user_dict.txt -o config/sudachi_user.dic -s config/system_core.dic
 ```
 
 ```

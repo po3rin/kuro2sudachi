@@ -1,5 +1,6 @@
-from kuro2sudachi.core import Converter, OOVError
 import fileinput
+
+from kuro2sudachi.core import Converter, OOVError
 
 
 def test_kuro2sudachi_cli(capsys):

@@ -1,12 +1,14 @@
-from sudachipy import dictionary, tokenizer
-from kuro2sudachi.normalizer import SudachiCharNormalizer
-import jaconv
-import fileinput
 import argparse
+import fileinput
 import json
 import os
 import re
+from dataclasses import dataclass
 
+import jaconv
+from sudachipy import dictionary, tokenizer
+
+from kuro2sudachi.normalizer import SudachiCharNormalizer
 
 mode = tokenizer.Tokenizer.SplitMode.C
 
@@ -34,8 +36,9 @@ parser.add_argument(
 parser.add_argument("-r", "--sudachi_setting", help="the setting file in JSON format")
 parser.add_argument("-s", "--sudachi_dict_type", help="sudachidict type")
 parser.add_argument(
-    "-m",
-    "--merge_dict",
+    "-u",
+    "--unit_word_dict",
+    default="",
     help="A dictionary for split registration of words that are not in the system dictionary. Must be specified as a user dictionary in sudachi's configuration file (json).",
 )
 parser.add_argument(
@@ -78,6 +81,12 @@ class OOVError(Error):
     pass
 
 
+@dataclass
+class UnitWord:
+    word_id: int
+    line: str
+
+
 class Converter:
     def __init__(
         self,
@@ -86,13 +95,13 @@ class Converter:
         sudachi_setting=None,
         dict_type="core",
         rm=False,
+        unit_words_dict: dict[str, UnitWord] = {},
     ):
         if rewrite_file == "":
             raise DictFormatError("rewrite.def file path is required")
 
         self.tokenizer = dictionary.Dictionary(
-            config_path=sudachi_setting,
-            dict=dict_type, 
+            config_path=sudachi_setting, dict=dict_type
         ).create()
 
         if config is not None:
@@ -105,6 +114,7 @@ class Converter:
         self.setting = s
         self.rm = rm
         self.normalizer = SudachiCharNormalizer(rewrite_def_path=self.rewrite)
+        self.unit_words_dict = unit_words_dict
 
     def convert(self, line: str) -> str:
         data = line.split(",")
@@ -159,7 +169,10 @@ class Converter:
                 oov.append(m.surface())
                 continue
 
-            word_ids.append(str(m.word_id()))
+            if str(m) in self.unit_words_dict:
+                word_ids.append(f"U{str(self.unit_words_dict[str(m)].word_id)}")
+            else:
+                word_ids.append(str(m.word_id()))
 
         if len(oov) > 0:
             raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
@@ -194,7 +207,15 @@ def cli() -> str:
     config = args.config
     sudachi_setting = args.sudachi_setting
     sudachi_dict_type = args.sudachi_dict_type
-    merge_dict = args.merge_dict
+    unit_word_dict = args.unit_word_dict
+
+    unit_words_dict: dict[str, UnitWord] = {}
+    if not unit_word_dict == "":
+        with fileinput.input(files=unit_word_dict) as merge_dict:
+            for i, line in enumerate(merge_dict):
+                line = line.replace("\n", "")
+                unit_words_dict[line.split(",")[0]] = UnitWord(word_id=i, line=line)
+                out.write(f"{line}\n")
 
     c = Converter(
         rewrite,
@@ -202,12 +223,8 @@ def cli() -> str:
         sudachi_setting=sudachi_setting,
         dict_type=sudachi_dict_type,
         rm=rm,
+        unit_words_dict=unit_words_dict,
     )
-
-    with fileinput.input(files=merge_dict) as merged:
-        for line in merged:
-            line = line.replace("\n", "")
-            out.write(f"{line}\n")
 
     with fileinput.input(files=args.file) as input:
         for line in input:
