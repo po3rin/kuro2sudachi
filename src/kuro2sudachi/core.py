@@ -91,7 +91,8 @@ class Converter:
             raise DictFormatError("rewrite.def file path is required")
 
         self.tokenizer = dictionary.Dictionary(
-            dict=dict_type, config_path=sudachi_setting
+            config_path=sudachi_setting,
+            dict=dict_type, 
         ).create()
 
         if config is not None:

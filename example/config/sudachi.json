@@ -1,28 +1,32 @@
 {
-    "systemDict" : "",
-    "userDict" : ["sudachi_user.dic"],
+    "userDict": ["sudachi_user.dic"],
     "characterDefinitionFile" : "char.def",
     "inputTextPlugin" : [
-        { "class" : "sudachipy.plugin.input_text.DefaultInputTextPlugin" },
-        { "class" : "sudachipy.plugin.input_text.ProlongedSoundMarkInputTextPlugin",
-            "prolongedSoundMarks": ["ー", "-", "⁓", "〜", "〰"],
-            "replacementSymbol": "ー"}
+        { "class" : "com.worksap.nlp.sudachi.DefaultInputTextPlugin" },
+        { "class" : "com.worksap.nlp.sudachi.ProlongedSoundMarkPlugin",
+          "prolongedSoundMarks": ["ー", "-", "⁓", "〜", "〰"],
+          "replacementSymbol": "ー"},
+	    { "class": "com.worksap.nlp.sudachi.IgnoreYomiganaPlugin",
+          "leftBrackets": ["(", "（"],
+          "rightBrackets": [")", "）"],
+          "maxYomiganaLength": 4}
     ],
     "oovProviderPlugin" : [
-        { "class" : "sudachipy.plugin.oov.MeCabOovProviderPlugin",
-            "charDef" : "char.def",
-            "unkDef" : "unk.def" },
-        { "class" : "sudachipy.plugin.oov.SimpleOovProviderPlugin",
-            "oovPOS" : [ "補助記号", "一般", "*", "*", "*", "*" ],
-            "leftId" : 5968,
-            "rightId" : 5968,
-            "cost" : 3857 }
+        { "class" : "com.worksap.nlp.sudachi.MeCabOovPlugin",
+          "charDef" : "char.def",
+          "unkDef" : "unk.def" },
+        { "class" : "com.worksap.nlp.sudachi.SimpleOovPlugin",
+          "oovPOS" : [ "補助記号", "一般", "*", "*", "*", "*" ],
+          "leftId" : 5968,
+          "rightId" : 5968,
+          "cost" : 3857 }
     ],
     "pathRewritePlugin" : [
-        { "class" : "sudachipy.plugin.path_rewrite.JoinNumericPlugin",
-            "enableNormalize" : true },
-        { "class" : "sudachipy.plugin.path_rewrite.JoinKatakanaOovPlugin",
-            "oovPOS" : [ "名詞", "普通名詞", "一般", "*", "*", "*" ],
-            "minLength": 3 }
+        { "class" : "com.worksap.nlp.sudachi.JoinNumericPlugin",
+          "enableNormalize" : true },
+        { "class" : "com.worksap.nlp.sudachi.JoinKatakanaOovPlugin",
+          "oovPOS" : [ "名詞", "普通名詞", "一般", "*", "*", "*" ],
+          "minLength" : 3
+        }
     ]
 }
