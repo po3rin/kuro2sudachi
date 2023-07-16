@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kuro2sudachi"
-version = "0.4.4"
+version = "0.4.5"
 description = ""
 authors = ["po3rin"]
 repository = "http://github.com/po3rin/kuro2sudachi"
