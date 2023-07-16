@@ -182,9 +182,15 @@ class Converter:
                     word_id = None
                     for l in lookup_list:
                         if str(m) == str(l):
-                            word_ids.append(str(m.word_id()))
-                            break
-                    return "*"
+                            print(l.word_id())
+                            word_id = str(l.word_id())
+
+                    if word_id is None:
+                        return "*"
+                    else:
+                        word_ids.append(word_id)
+                        continue
+                        
                 word_ids.append(str(m.word_id()))
 
         if len(oov) > 0:
