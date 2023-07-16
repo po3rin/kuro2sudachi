@@ -5,7 +5,7 @@ from kuro2sudachi.core import Converter, OOVError
 
 def test_kuro2sudachi_cli(capsys):
     sudachi_dict_lines = []
-    c = Converter(rewrite_file="./tests/rewrite.def", dict_type="full", rm=True)
+    c = Converter(rewrite_file="./tests/rewrite.def", sudachi_dict="full", rm=True)
 
     with fileinput.input(files="tests/sudachi_dict.txt") as input:
         for line in input:
@@ -38,7 +38,7 @@ def test_kuro2sudachi_cli(capsys):
 def test_kuro2sudachi_with_custom_pos_cli(capsys):
     c = Converter(
         rewrite_file="./tests/rewrite.def",
-        dict_type="full",
+        sudachi_dict="full",
         config="tests/convert_config.json",
         rm=True,
     )
@@ -71,10 +71,9 @@ def test_kuro2sudachi_with_custom_pos_cli(capsys):
 def test_kuro2sudachi_with_split(capsys):
     c = Converter(
         rewrite_file="./tests/rewrite.def",
-        dict_type="full",
+        sudachi_dict="full",
         config="tests/convert_config.json",
-        rm=True,
-        
+        rm=True
     )
 
     sudachi_dict_lines = []
