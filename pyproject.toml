@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kuro2sudachi"
-version = "0.4.2"
+version = "0.4.4"
 description = ""
 authors = ["po3rin"]
 repository = "http://github.com/po3rin/kuro2sudachi"
@@ -22,7 +22,7 @@ sudachidict-full = "^20230110"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
-pytest = "^6.2.1"
+pytest = "^6.2.2"
 twine = "^4.0.2"
 isort = "^5.12.0"
 
