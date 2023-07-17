@@ -182,7 +182,6 @@ class Converter:
                     word_id = None
                     for l in lookup_list:
                         if str(m) == str(l):
-                            print(l.word_id())
                             word_id = str(l.word_id())
 
                     if word_id is None:
