@@ -36,7 +36,7 @@ you can overwrite convert config with setting json file.
 ```
 
 ```$
-$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -c convert_config.json
+$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -c kuro2sudachi.json
 ```
 
 if you want to ignore unsupported pos error & invalid format, use `--ignore` flag.
@@ -76,7 +76,7 @@ $ cat kuromoji_dict.txt
 融合たんぱく質,融合たんぱく質,融合たんぱく質,名詞
 発作性心房細動,発作性心房細動,発作性心房細動,名詞
 
-$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -c convert_config.json --ignore
+$ kuro2sudachi kuromoji_dict.txt -o sudachi_user_dict.txt -c kuro2sudachi.json --ignore
 
 $ cat sudachi_user_dict.txt
 融合たんぱく質,4786,4786,5000,融合たんぱく質,名詞,普通名詞,一般,*,*,*,,融合たんぱく質,*,C,*,660881/810248,*
@@ -107,8 +107,3 @@ exec kuro2sudachi command
 ```sh
 $ poetry run kuro2sudachi tests/kuromoji_dict_test.txt -o sudachi_user_dict.txt
 ```
-
-## TODO
-
-- [ ] split mode
-- [ ] default rewrite

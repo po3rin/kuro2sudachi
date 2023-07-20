@@ -1,14 +1,17 @@
-from sudachipy import dictionary, tokenizer
-from kuro2sudachi.normalizer import SudachiCharNormalizer
-import jaconv
-import fileinput
 import argparse
+import fileinput
 import json
 import os
 import re
+from dataclasses import dataclass
+
+import jaconv
+from sudachipy import dictionary, SplitMode
+
+from kuro2sudachi.normalizer import SudachiCharNormalizer
 
 
-mode = tokenizer.Tokenizer.SplitMode.C
+MAX_WORD_ID = 2912274
 
 parser = argparse.ArgumentParser(
     description="convert kuromoji user dict to sudacchi user dict"
@@ -34,8 +37,9 @@ parser.add_argument(
 parser.add_argument("-r", "--sudachi_setting", help="the setting file in JSON format")
 parser.add_argument("-s", "--sudachi_dict_type", help="sudachidict type")
 parser.add_argument(
-    "-m",
-    "--merge_dict",
+    "-u",
+    "--unit_word_dict",
+    default="",
     help="A dictionary for split registration of words that are not in the system dictionary. Must be specified as a user dictionary in sudachi's configuration file (json).",
 )
 parser.add_argument(
@@ -78,22 +82,30 @@ class OOVError(Error):
     pass
 
 
+@dataclass
+class UnitWord:
+    word_id: int
+    line: str
+
+
 class Converter:
     def __init__(
         self,
         rewrite_file,
         config=None,
         sudachi_setting=None,
-        dict_type="core",
+        sudachi_dict="core",
         rm=False,
-    ):
+        unit_words_dict: dict[str, UnitWord] = {},
+    ) -> None:
         if rewrite_file == "":
             raise DictFormatError("rewrite.def file path is required")
 
-        self.tokenizer = dictionary.Dictionary(
+        dic = dictionary.Dictionary(
             config_path=sudachi_setting,
-            dict=dict_type, 
-        ).create()
+            dict=sudachi_dict
+        )
+        self.tokenizer = dic.create()
 
         if config is not None:
             with open(config) as f:
@@ -105,37 +117,34 @@ class Converter:
         self.setting = s
         self.rm = rm
         self.normalizer = SudachiCharNormalizer(rewrite_def_path=self.rewrite)
+        self.unit_words_dict = unit_words_dict
+        self.dic = dic
 
     def convert(self, line: str) -> str:
         data = line.split(",")
         try:
             word = data[0]
-            # splited = data[1]
             yomi = self.nomlized_yomi(data[2].replace(" ", ""))
             pos = self.pos_convert(data[3].replace(" ", ""))
         except IndexError:
             raise DictFormatError(f"'{line}' is invalid format")
 
-        words = [m.surface() for m in self.tokenizer.tokenize(word, mode)]
-
-        # alrady exists in system dic
+        words = [m.surface() for m in self.tokenizer.tokenize(text=word, mode=SplitMode.C)]
         if self.rm and len(words) == 1:
+            # alrady exists in system dic (mode C)
             return ""
 
-        normalized = self.normalizer.rewrite(word)
-        unit_div_info = "*,*"
-
-        try:
-            if (udm := pos.get("unit_div_mode")) != None:
-                unit_div_info = self.split(normalized, udm)
-        except OOVError as e:
-            print(e)
-            raise e
+        normalized_word = self.normalizer.rewrite(text=word)
+        
+        if (unit_div_mode := pos.get("unit_div_mode")) != None:
+            unit_div_info = self.split(word=normalized_word, unit_div_mode=unit_div_mode)
+        else:
+            unit_div_info = "*,*"
 
         split_mode = pos.get("split_mode", "*")
-        return f"{normalized},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,{split_mode},{unit_div_info},*"
+        return f"{normalized_word},{pos['left_id']},{pos['right_id']},{pos['cost']},{word},{pos['sudachi_pos']},{yomi},{word},*,{split_mode},{unit_div_info},*"
 
-    def pos_convert(self, pos: str):
+    def pos_convert(self, pos: str) -> dict[str, any]:
         try:
             spos = self.setting[pos]
             return spos
@@ -143,15 +152,16 @@ class Converter:
             raise UnSupportedPosError(f"{pos} is not supported pos")
 
     def nomlized_yomi(self, yomi: str) -> str:
-        yomi = jaconv.hira2kata(yomi)
-        if p.fullmatch(yomi):
+        yomi = jaconv.hira2kata(text=yomi)
+        if p.fullmatch(string=yomi):
             return yomi
         return ""
 
-    def split_info(self, normalized: str, udm: list[str], mode: any) -> str:
+    def split_info(self, word: str, mode: SplitMode) -> str:
         word_ids = []
         oov = []
-        for m in self.tokenizer.tokenize(normalized, mode):
+        ms = self.tokenizer.tokenize(text=word, mode=mode)
+        for m in ms:
             if ",".join(m.part_of_speech()) == "名詞,数詞,*,*,*,*":
                 return "*"
 
@@ -159,24 +169,45 @@ class Converter:
                 oov.append(m.surface())
                 continue
 
-            word_ids.append(str(m.word_id()))
+            if str(m) in self.unit_words_dict:
+                word_ids.append(f"U{str(self.unit_words_dict[str(m)].word_id)}")
+            else:
+                if m.word_id() > MAX_WORD_ID:
+                    # If word_mask and word_id match, there is a possibility that the word was generated by the rewrite plugin.
+                    # In that case word_id is not defined, so you get an error when building the dictionary.
+                    # Therefore, look up the word again in the dictionary and obtain the word_id(TODO).
+                    print(f"{str(m)} word_id {m.word_id()} is greater than max_id {MAX_WORD_ID}. So lookup the word directly from the dictionary.")
+                    lookup_list = self.dic.lookup(str(m))
+
+                    word_id = None
+                    for l in lookup_list:
+                        if str(m) == str(l):
+                            word_id = str(l.word_id())
+
+                    if word_id is None:
+                        return "*"
+                    else:
+                        word_ids.append(word_id)
+                        continue
+                        
+                word_ids.append(str(m.word_id()))
 
         if len(oov) > 0:
-            raise OOVError(f"split word has out of vocab: {oov} in {normalized}")
+            raise OOVError(f"split word has out of vocab: {oov} in {word}")
 
         return "/".join(word_ids)
 
-    def split(self, normalized: str, udm: list[str]) -> str:
+    def split(self, word: str, unit_div_mode: list[str]) -> str:
         try:
-            unit_div_info = []
-            if "A" in udm:
-                info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.A)
+            unit_div_info: list[str] = []
+            if "A" in unit_div_mode:
+                info = self.split_info(word=word, mode=SplitMode.A)
                 unit_div_info.append(info)
             else:
                 unit_div_info.append("*")
 
-            if "B" in udm:
-                info = self.split_info(normalized, udm, tokenizer.Tokenizer.SplitMode.B)
+            if "B" in unit_div_mode:
+                info = self.split_info(word=word, mode=SplitMode.B)
                 unit_div_info.append(info)
             else:
                 unit_div_info.append("*")
@@ -194,20 +225,25 @@ def cli() -> str:
     config = args.config
     sudachi_setting = args.sudachi_setting
     sudachi_dict_type = args.sudachi_dict_type
-    merge_dict = args.merge_dict
+    unit_word_dict = args.unit_word_dict
+
+    unit_words_dict: dict[str, UnitWord] = {}
+    if not unit_word_dict == "":
+        with fileinput.input(files=unit_word_dict) as merge_dict:
+            for i, line in enumerate(merge_dict):
+                w = line.split(",")[0]
+                line = line.replace("\n", "")
+                unit_words_dict[w] = UnitWord(word_id=i, line=line)
+                out.write(f"{line}\n")
 
     c = Converter(
         rewrite,
         config,
         sudachi_setting=sudachi_setting,
-        dict_type=sudachi_dict_type,
+        sudachi_dict=sudachi_dict_type,
         rm=rm,
+        unit_words_dict=unit_words_dict,
     )
-
-    with fileinput.input(files=merge_dict) as merged:
-        for line in merged:
-            line = line.replace("\n", "")
-            out.write(f"{line}\n")
 
     with fileinput.input(files=args.file) as input:
         for line in input:
