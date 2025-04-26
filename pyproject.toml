@@ -17,8 +17,8 @@ python = "^3.11"
 jaconv = "^0.2.4"
 importlib-metadata = "^6.7.0"
 sudachipy = "^0.6.7"
-sudachidict-core = "^20230110"
-sudachidict-full = "^20230110"
+sudachidict-core = "^20250129"
+sudachidict-full = "^20250129"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
